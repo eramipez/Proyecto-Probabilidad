@@ -1,0 +1,70 @@
+//UPIIT
+//ITALY
+//ROBERTO
+//HOMERO
+//ENRIQUE
+
+#include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
+
+// Función que devuelve el valor de la distribución normal estándar (usando la función erf)
+double normalDistribution(double x) {
+    return 0.5 * (1.0 + erf(x / sqrt(2.0)));
+}
+
+// Función para la integración numérica usando el método de Simpson
+double integrate(double a, double b, int n) {
+    if (n % 2 != 0 || n <= 0) {
+        printf("Error: El número de subintervalos debe ser un número par positivo.\n");
+        return 0.0;
+    }
+
+    double h = (b - a) / n;
+    double result = normalDistribution(a) + normalDistribution(b);
+
+    for (int i = 1; i < n; i += 2) {
+        double x = a + i * h;
+        result += 4.0 * normalDistribution(x);
+    }
+
+    for (int i = 2; i < n - 1; i += 2) {
+        double x = a + i * h;
+        result += 2.0 * normalDistribution(x);
+    }
+
+    result *= h / 3.0;
+    return result;
+}
+
+int main() {
+    // Definir los límites de integración "a" y "b"
+    double a, b;
+
+    // Solicitar al usuario los límites de integración
+    printf("Introduce el límite inferior (a): ");
+    scanf("%lf", &a);
+
+    printf("Introduce el límite superior (b): ");
+    scanf("%lf", &b);
+
+    // Número de subintervalos para el método de Simpson
+    int n;
+
+    // Solicitar al usuario el número de subintervalos
+    do {
+        printf("Introduce el número de subintervalos (debe ser par y positivo): ");
+        scanf("%d", &n);
+
+        // Manejar entrada incorrecta
+        if (n % 2 != 0 || n <= 0) {
+            printf("Error: El número de subintervalos debe ser un número par positivo.\n");
+        }
+    } while (n % 2 != 0 || n <= 0);
+
+    // Realizar la integración numérica y mostrar el resultado
+    double result = integrate(a, b, n);
+    printf("La integral de la distribución normal de %.2f a %.2f es: %.6f\n", a, b, result);
+
+    return 0;
+}
